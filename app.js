@@ -1804,12 +1804,12 @@ function renderFood(){
   var w=document.getElementById("foodw");
   if(!w)return;
   var h='<div class="fd-wrap"><div class="fd-box">';
-  h+='<input class="fd-in" id="fd-q" type="search" placeholder="Cerca altro: sushi, kebab, brunch..." autocomplete="off">';
-  h+='<div class="fd-seg"><button id="fd-s1" class="on">\u{1F4CD} Vicino a me</button><button id="fd-s2">\u{1F3E8} Vicino all\'hotel</button></div>';
-  h+='<div class="fd-chips" id="fd-quick"><span class="fd-chip" id="fd-open">\u{1F7E2} Aperto ora</span>'+FOOD_QUICK.map(function(x){return '<a class="fd-chip fd-qa" target="_blank" rel="noopener" data-q="'+x[2]+'">'+x[0]+" "+x[1]+'</a>'}).join("")+'</div>';
-  h+='<div class="fd-go"><a id="fd-maps" class="p" target="_blank" rel="noopener">\u{1F5FA} Su Maps</a><a id="fd-goog" target="_blank" rel="noopener">\u{1F50D} Su Google</a></div>';
-  h+='<div class="fd-note" id="fd-note"></div></div>';
-  h+='<div class="fd-note" style="margin-top:10px">I risultati si aprono su Google, sempre intorno alla tua posizione attuale. L\'orario di apertura lo vedi direttamente nella scheda del locale.</div></div>';
+  h+='<div class="fd-row"><input class="fd-in" id="fd-q" type="search" placeholder="Cerca altro: sushi, kebab, brunch..." autocomplete="off">';
+  h+='<a id="fd-maps" class="fd-ic" title="Cerca su Google Maps" aria-label="Cerca su Google Maps" target="_blank" rel="noopener">\u{1F4CD}</a>';
+  h+='<a id="fd-goog" class="fd-ic" title="Cerca su Google" aria-label="Cerca su Google" target="_blank" rel="noopener">\u{1F50D}</a></div>';
+  h+='<div class="fd-chips" id="fd-quick"><span class="fd-chip" id="fd-open">\u{1F7E2} Aperto ora</span>'+FOOD_QUICK.map(function(x){return '<a class="fd-chip fd-qa" target="_blank" rel="noopener" data-q="'+x[2]+'">'+x[0]+" "+x[1]+'</a>'}).join("")+'</div></div>';
+  h+='<div class="fd-box"><div class="fd-seg" style="margin-top:0"><button id="fd-s1" class="on">\u{1F4CD} Vicino a me</button><button id="fd-s2">\u{1F3E8} Vicino all\'hotel</button></div>';
+  h+='<div class="fd-note" id="fd-note"></div></div></div>';
   w.innerHTML=h;
   var q=document.getElementById("fd-q");
   q.oninput=function(){foodQ=q.value;updateFoodLinks()};
