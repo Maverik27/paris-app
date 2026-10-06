@@ -181,12 +181,3 @@ var FOOD = [
   {c:"Vicino all'hotel",n:"Rue des Martyrs",z:"9° arr.",d:"Via di botteghe, boulangerie, formaggi e caffè.",a:"Rue des Martyrs, 75009 Paris"}
 ];
 
-
-/* --- Immagini tappe: foto in img/ (nome file per tappa). Se manca, si usa l'immagine standard d-*.svg --- */
-var IMG_MAP = {
-  "Notre-Dame":"notre-dame.jpg","Sainte-Chapelle":"sainte-chapelle.jpg","Pont des Arts":"pont-des-arts.jpg",
-  "Museo del Louvre":"louvre.jpg","Palais Royal":"palais-royal.jpg","Galerie Vivienne":"galerie-vivienne.jpg",
-  "Bouillon Chartier":"bouillon-chartier.jpg","Parc des Princes":"parc-des-princes.jpg","Trocadéro":"trocadero.jpg",
-  "Torre Eiffel":"torre-eiffel.jpg","Pranzo a Rue Cler":"rue-cler.jpg","Giro in battello sulla Senna":"battello-senna.jpg",
-  "Arc de Triomphe":"arc-de-triomphe.jpg","Champs-Élysées":"champs-elysees.jpg","Sacré-Cœur":"sacre-coeur.jpg"
-};

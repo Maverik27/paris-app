@@ -488,9 +488,10 @@ html.light .shell::before{background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .hm-h{font-size:12px;color:var(--tx3)}
 .hm-go{margin-top:10px;width:100%;padding:12px;border-radius:12px;border:1px solid var(--acc);background:var(--accs);color:var(--acc);font-size:14px;font-weight:600;font-family:var(--f);cursor:pointer}
 
-.zk-img{background-size:cover;background-position:center;color:#fff}
-.zk-img .zk-time,.zk-img .zk-du{color:rgba(255,255,255,.8)}
-.zk-img .zk-nm{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
-.zk-img .zk-ds{color:rgba(255,255,255,.88)}
-.zk-img .zk-lb{color:#fff;opacity:.9}
-.zk-img:active{filter:brightness(.9)}
+/* tinte per tipologia (tenui, seguono il tema) */
+.zk{position:relative;--zt:var(--tx3)}
+.zk-t-pub{--zt:var(--pub)}.zk-t-cibo{--zt:var(--food)}.zk-t-attr{--zt:var(--attr)}.zk-t-mkt{--zt:var(--mkt)}
+.zk-t-trans{--zt:var(--trn)}.zk-t-walk{--zt:var(--wlk)}.zk-t-hotel{--zt:var(--htl)}.zk-t-pano{--zt:var(--pan)}
+.zk-t-foto{--zt:var(--fot)}.zk-t-shop{--zt:var(--mkt)}
+.zk[class*="zk-t-"]{background:color-mix(in srgb,var(--zt) 9%,var(--card))}
+.zk[class*="zk-t-"]::after{content:attr(data-e);position:absolute;right:52px;top:50%;transform:translateY(-50%);font-size:22px;opacity:.22;pointer-events:none}
