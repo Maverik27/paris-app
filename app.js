@@ -6,9 +6,9 @@
 /* --- PIN Lock --- */
 var PIN_HASH="";
 var pinCode="";
-var PIN_LEN=6;
+var PIN_LEN=String(CONFIG.pin).replace(/\D/g,"").length||6;
 function hashPin(p){var h=0;for(var i=0;i<p.length;i++){h=((h<<5)-h)+p.charCodeAt(i);h=h&h}return h.toString(36)}
-PIN_HASH=hashPin(CONFIG.pin);
+PIN_HASH=hashPin(String(CONFIG.pin).replace(/\D/g,""));
 function initLock(){
   if(sessionStorage.getItem("unlocked")==="1"){document.getElementById("lockScreen").classList.add("hide");return}
   document.querySelector(".shell").style.display="none";
