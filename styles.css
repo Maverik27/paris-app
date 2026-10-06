@@ -487,3 +487,10 @@ html.light .shell::before{background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .hm-n.dn{text-decoration:line-through;color:var(--tx3);font-weight:400}
 .hm-h{font-size:12px;color:var(--tx3)}
 .hm-go{margin-top:10px;width:100%;padding:12px;border-radius:12px;border:1px solid var(--acc);background:var(--accs);color:var(--acc);font-size:14px;font-weight:600;font-family:var(--f);cursor:pointer}
+
+.zk-img{background-size:cover;background-position:center;color:#fff}
+.zk-img .zk-time,.zk-img .zk-du{color:rgba(255,255,255,.8)}
+.zk-img .zk-nm{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+.zk-img .zk-ds{color:rgba(255,255,255,.88)}
+.zk-img .zk-lb{color:#fff;opacity:.9}
+.zk-img:active{filter:brightness(.9)}

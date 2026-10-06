@@ -86,7 +86,7 @@ S("00:30","Hotel Royal Mansart","Hotel","Check-in tardivo. Avvisare l'hotel dell
 
 {id:1,pl:"Sab 21",t:"Notre-Dame, Louvre e Palais Royal",wt:"4-10°C",rn:0,dr:"🧥 Giubbotto caldo, scarpe comode. Possibile pioggia.",wn:"",km:9,zones:[
 {zone:"Mattina",items:[
-S("09:30","Colazione","Cibo","Rue des Martyrs è a pochi minuti a piedi: croissant, pain au chocolat e caffè.","~45 min",48.8800,2.3388,"Rue des Martyrs, 75009","",[],H_LA,H_LN)]},
+S("09:00","Colazione in hotel","Cibo","Inclusa nel soggiorno.","~45 min",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
 {zone:"Île de la Cité",items:[
 S("10:15","Metro verso Cité","Trasporto","~30 min con un cambio. Usare Citymapper per il percorso aggiornato.","~35 min",48.8553,2.3469,"Cité","",[],48.8800,2.3388),
 S("10:50","Notre-Dame","Attrazione","Cattedrale riaperta dopo il restauro, ingresso gratuito. Coda variabile.","~1h",48.8530,2.3499,"6 Parvis Notre-Dame, 75004","",[W("📋 Prenotare slot gratuito","b")],48.8553,2.3469),
@@ -107,7 +107,7 @@ S("22:45","Rientro hotel","Trasporto","A piedi o in metro, ~15 min.","",H_LA,H_L
 
 {id:2,pl:"Dom 22",t:"Parc des Princes, Torre Eiffel, Senna e Montmartre",wt:"4-10°C",rn:0,dr:"🧥 Giubbotto caldo, cappello. Sul battello fa freddo.",wn:"",km:11,zones:[
 {zone:"Mattina",items:[
-S("09:00","Colazione","Cibo","Colazione vicino all'hotel.","~45 min",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
+S("09:00","Colazione in hotel","Cibo","Inclusa nel soggiorno.","~45 min",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
 {zone:"Parc des Princes",items:[
 S("09:45","Metro verso Parc des Princes","Trasporto","~40 min con cambi. Scendere a Porte de Saint-Cloud (M9) o Porte d'Auteuil (M10). Usare Citymapper.","~40 min",48.8414,2.2530,"Parc des Princes","",[],H_LA,H_LN),
 S("10:30","Parc des Princes","Attrazione","Stadio del PSG. Nessuna partita casalinga in programma (il PSG gioca a Nizza sabato 21). Tour dello stadio e boutique da verificare.","~1h",48.8414,2.2530,"24 Rue du Commandant Guilbaud, 75016","",[W("⭐ Opzionale","i"),W("📋 Verificare tour e orari","b")],48.8414,2.2530),
@@ -180,3 +180,13 @@ var FOOD = [
   {c:"Bistrot e brasserie",n:"Bouillon Pigalle",z:"Pigalle (vicino hotel)",d:"Cucina francese tradizionale a prezzi contenuti.",a:"22 Boulevard de Clichy, 75018 Paris"},
   {c:"Vicino all'hotel",n:"Rue des Martyrs",z:"9° arr.",d:"Via di botteghe, boulangerie, formaggi e caffè.",a:"Rue des Martyrs, 75009 Paris"}
 ];
+
+
+/* --- Immagini tappe: foto in img/ (nome file per tappa). Se manca, si usa l'immagine standard d-*.svg --- */
+var IMG_MAP = {
+  "Notre-Dame":"notre-dame.jpg","Sainte-Chapelle":"sainte-chapelle.jpg","Pont des Arts":"pont-des-arts.jpg",
+  "Museo del Louvre":"louvre.jpg","Palais Royal":"palais-royal.jpg","Galerie Vivienne":"galerie-vivienne.jpg",
+  "Bouillon Chartier":"bouillon-chartier.jpg","Parc des Princes":"parc-des-princes.jpg","Trocadéro":"trocadero.jpg",
+  "Torre Eiffel":"torre-eiffel.jpg","Pranzo a Rue Cler":"rue-cler.jpg","Giro in battello sulla Senna":"battello-senna.jpg",
+  "Arc de Triomphe":"arc-de-triomphe.jpg","Champs-Élysées":"champs-elysees.jpg","Sacré-Cœur":"sacre-coeur.jpg"
+};

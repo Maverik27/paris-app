@@ -1293,6 +1293,16 @@ function updateTimers(){
   });
 }
 
+function stopImg(s){
+  var n=s.n,k;
+  if(/colazione/i.test(n))k="croissant";
+  else if(/navetta/i.test(n))k="bus";
+  else if(/volo|elmas|aeroporto|beauvais/i.test(n))k="plane";
+  else k={"Cibo":"food","Mercato":"market","Bar/Cantina":"wine","Hotel":"hotel","Trasporto":"metro","Passeggiata":"walk","Foto":"photo","Attrazione":"attr"}[s.tp]||"attr";
+  var u="linear-gradient(90deg,rgba(0,0,0,.72),rgba(0,0,0,.35))";
+  if(typeof IMG_MAP!=="undefined"&&IMG_MAP[n])u+=",url('img/"+IMG_MAP[n]+"')";
+  return u+",url('img/d-"+k+".svg')";
+}
 function renderDay(i){
   var d=LIVE_DAYS[i],all=allItems(d);
   var pb=0,fb=0;all.forEach(function(s){if(s.tp==="Bar/Cantina")pb++;if(s.tp==="Cibo")fb++});
@@ -1322,7 +1332,7 @@ function renderDay(i){
       
       var cmHref=s.la?"https://citymapper.com/directions?startcoord="+CONFIG.hotelLat+","+CONFIG.hotelLng+"&endcoord="+s.la+","+s.ln+"&endname="+encodeURIComponent(s.n)+(s.ad?"&endaddress="+encodeURIComponent(s.ad):""):"";
 
-      h+='<div class="zk'+(isSkip?" skip":"")+'" id="zk-'+i+'-'+gi+'" onclick="tgl('+i+','+gi+')">';
+      h+='<div class="zk zk-img'+(isSkip?" skip":"")+'" id="zk-'+i+'-'+gi+'" style="background-image:'+stopImg(s)+'" onclick="tgl('+i+','+gi+')">';
       h+='<div class="zk-wrap"><div class="zk-content"><div class="zk-top"><span class="zk-dot '+cl+'"></span><span class="zk-time">'+s.t+'</span><span class="zk-lb '+cl+'">'+ti+" "+tn+'</span></div>';
       var diaryInfo=renderDiaryBtn(i,gi);
       var metroWarn=getMetroWarning(s);
