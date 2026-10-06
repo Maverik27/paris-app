@@ -37,20 +37,21 @@
 </div>
 
 <!-- Tab: Piano -->
-<div class="pg on" id="p1">
+<div class="pg" id="p1">
   <div class="pills" id="pls"></div>
   <div class="prog"><div class="prog-bar" id="pbar" style="width:0%"></div></div>
   <div class="gps-wrap"><div id="gmap"></div><button class="gps-btn" onclick="doLocate()">&#x1F4CD; Tu sei qui</button></div>
   <div id="dc"></div>
 </div>
 
-<!-- Tab: Cerca -->
-<div class="pg" id="p2">
+<!-- Tab: Home (La mia giornata) -->
+<div class="pg on" id="p2">
   <div class="srw">
     <div class="srbox">
       <input class="srin" type="text" id="si" placeholder="Cerca luogo, bar, metro...">
     </div>
     <div class="scps" id="scp"></div>
+    <div id="home"></div>
     <div id="srs"></div>
     <div id="nom-results"></div>
   </div>
@@ -74,8 +75,8 @@
 
 <!-- Bottom Nav -->
 <nav class="nav">
-<button class="on" data-p="p1" title="Piano" aria-label="Piano"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect x="4" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M4 9h14M9 4v14M14 4v14" stroke="currentColor" stroke-width=".8" opacity=".4"/></svg></span></button>
-<button data-p="p2" title="Cerca" aria-label="Cerca"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M14 14l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+<button class="on" data-p="p2" title="La mia giornata" aria-label="La mia giornata"><span class="ni">🗼</span></button>
+<button data-p="p1" title="Piano" aria-label="Piano"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect x="4" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M4 9h14M9 4v14M14 4v14" stroke="currentColor" stroke-width=".8" opacity=".4"/></svg></span></button>
 <button data-p="p3" title="Trasporti" aria-label="Trasporti"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="4" y="9.5" width="14" height="3" rx=".5" fill="currentColor"/></svg></span></button>
 <button data-p="p4" title="Meteo" aria-label="Meteo"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="10" r="3.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M11 4v2M11 16v2M5 10H3M19 10h-2M6 5.5l1.5 1.5M14.5 14l1.5 1.5M6 14.5l1.5-1.5M14.5 6l1.5-1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></button>
 <button data-p="p7" title="Mangiare" aria-label="Mangiare"><span class="ni">🍽</span></button>

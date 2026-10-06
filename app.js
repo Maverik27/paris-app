@@ -895,6 +895,7 @@ var TAB_HEADERS = {
   p6: {name:"Drink Counter", icon:CONFIG.iconPint},
   p5: {name:"Info", icon:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Crect%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%227%22%20fill%3D%22%236b7280%22/%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2210%22%20r%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20x%3D%2213%22%20y%3D%2214%22%20width%3D%224%22%20height%3D%229%22%20rx%3D%221%22%20fill%3D%22%23fff%22/%3E%3C/svg%3E"}
 };
+TAB_HEADERS.p2={name:"La mia giornata",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#a855f7"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F5FC}</text></svg>')};
 TAB_HEADERS.p7={name:"Dove mangiare",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#06b6d4"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F37D}</text></svg>')};
 function updateHeader(tabId){
   if(tabId==="p7"&&typeof foodOnOpen==="function")foodOnOpen();
@@ -934,7 +935,7 @@ function renderQuickView(){
   var now=new Date();
   var dayIdx=-1;
   // Find which day we're on (26-31 Mar 2026)
-  var dates=["2026-03-26","2026-03-27","2026-03-28","2026-03-29","2026-03-30","2026-03-31"];
+  var dates=["2026-11-20","2026-11-21","2026-11-22","2026-11-23"];
   var today=now.toISOString().split("T")[0];
   for(var i=0;i<dates.length;i++){if(dates[i]===today){dayIdx=i;break}}
   
@@ -1038,7 +1039,7 @@ function showGuide(){
 
 
 /* --- Swipe: days on Piano, tabs everywhere --- */
-var TAB_ORDER=["p1","p2","p3","p4","p7","p6","p5"];
+var TAB_ORDER=["p2","p1","p3","p4","p7","p6","p5"];
 var swStartX=0,swStartY=0;
 
 function getActiveTab(){
@@ -1055,6 +1056,7 @@ function switchToTab(tabId){
     if(b.dataset.p===tabId)b.classList.add("on");
   });
   updateHeader(tabId);
+  if(tabId==="p1"&&gpsMap)setTimeout(function(){gpsMap.invalidateSize();renderDayMarkers()},100);
 }
 
 function initSwipe(){
@@ -1084,6 +1086,7 @@ function initSwipe(){
       }else{
         // Swipe right: prev day
         if(cD>0)selDay(cD-1);
+        else if(tabIdx>0)switchToTab(TAB_ORDER[tabIdx-1]);
       }
     }else{
       // Other tabs: swipe switches tabs
@@ -1114,6 +1117,7 @@ function getMetroWarning(stop){
 
 
 function filterCat(cat){
+  homeVis(false);
   // Clear search input and filter by category
   var q=document.getElementById("si").value.trim().toLowerCase();
   var r=document.getElementById("srs");
@@ -1183,7 +1187,9 @@ function init(){
   renderNav();renderPills();LIVE_DAYS=loadDays();
 checkVersion();
 renderDay(0);renderSearch();renderTr();renderMt();renderIf();renderFood();renderBeerPage();
+  var _t=homeToday();homeDay=_t>=0?_t:0;renderHome();updateHeader("p2");
   document.getElementById("si").addEventListener("input",doSearch);
+  document.getElementById("si").placeholder="Cerca tappa, luogo, metro...";
   var el=document.getElementById("dc");
   // day swipe handled by initSwipe()
   setTimeout(initMap,300);
@@ -1196,7 +1202,7 @@ renderDay(0);renderSearch();renderTr();renderMt();renderIf();renderFood();render
 
 function initMap(){
   try{
-    gpsMap=L.map("gmap",{zoomControl:false,attributionControl:false}).setView([51.521,-0.0776],13);
+    gpsMap=L.map("gmap",{zoomControl:false,attributionControl:false}).setView([CONFIG.hotelLat,CONFIG.hotelLng],13);
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:18}).addTo(gpsMap);
     renderDayMarkers();
     doLocate();
@@ -1234,7 +1240,7 @@ function getZoneColor(z){
 function updateTimers(){
   var now=new Date();
   var nowH=now.getHours(),nowM=now.getMinutes();
-  var dates=["2026-03-26","2026-03-27","2026-03-28","2026-03-29","2026-03-30","2026-03-31"];
+  var dates=["2026-11-20","2026-11-21","2026-11-22","2026-11-23"];
   var today=now.toISOString().split("T")[0];
   var dayDate=dates[cD]||"";
   
@@ -1371,8 +1377,9 @@ function doSearch(){
   var r=document.getElementById("srs");
   var nc=document.getElementById("nom-results");
   
+  homeVis(!q);
   if(!q){
-    r.innerHTML='<div class="sr-empty">Cerca un luogo nell\'itinerario o aggiungi nuovi posti</div>';
+    r.innerHTML="";
     if(nc)nc.innerHTML="";
     return;
   }
@@ -1415,10 +1422,7 @@ function doSearch(){
   }
 }
 function goTo(di,t){
-  document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("on")});
-  document.querySelectorAll(".pg").forEach(function(x){x.classList.remove("on")});
-  document.querySelector('.nav button[data-p="p1"]').classList.add("on");
-  document.getElementById("p1").classList.add("on");
+  switchToTab("p1");
   selDay(di);
   setTimeout(function(){
     var all=allItems(LIVE_DAYS[di]);var si=all.findIndex(function(s){return s.t===t});
@@ -1829,6 +1833,42 @@ function renderFood(){
     if(e.target&&e.target.id==="fd-upd"){e.preventDefault();foodLocate()}
   };
   updateFoodUi();
+}
+
+/* --- Home: La mia giornata (tab p2) --- */
+var HOME_BOOK=[[0,"Navetta Beauvais - Porte Maillot (biglietto online)"],[0,"Avvisare l'hotel dell'arrivo tardivo"],[1,"Notre-Dame (prenotazione gratuita, opzionale)"],[1,"Louvre (biglietto con fascia oraria)"],[2,"Torre Eiffel (se sali, orario online)"],[2,"Battello sulla Senna"],[2,"Tour Parc des Princes (opzionale)"],[3,"Navetta Porte Maillot - Beauvais (biglietto online)"]];
+var homeDay=0;
+function homeVis(show){var h=document.getElementById("home");if(h)h.style.display=show?"":"none"}
+function homeToday(){
+  var n=new Date(),p=function(x){return (x<10?"0":"")+x};
+  var t=n.getFullYear()+"-"+p(n.getMonth()+1)+"-"+p(n.getDate());
+  var ds=["2026-11-20","2026-11-21","2026-11-22","2026-11-23"];
+  return ds.indexOf(t);
+}
+function homeBk(di,i){return "pr-bk-"+di+"-"+i}
+function homeTick(di,i){
+  var k=homeBk(di,i);
+  try{localStorage.setItem(k,localStorage.getItem(k)==="1"?"0":"1")}catch(e){}
+  renderHome();
+}
+function homeSel(i){homeDay=i;renderHome()}
+function renderHome(){
+  var w=document.getElementById("home");
+  if(!w||!LIVE_DAYS||!LIVE_DAYS.length)return;
+  var di=Math.min(homeDay,LIVE_DAYS.length-1),d=LIVE_DAYS[di],all=allItems(d),today=homeToday();
+  var h='<div class="hm-pills">'+LIVE_DAYS.map(function(x,i){return '<div class="hm-pl'+(i===di?" on":"")+(i===today?" td":"")+'" onclick="homeSel('+i+')">'+x.pl+'</div>'}).join("")+'</div>';
+  h+='<div class="hm-card"><div class="hm-t">'+d.t+'</div><div class="hm-chips"><span>\u{1F321} '+d.wt+'</span><span>\u{1F6B6} ~'+d.km+' km</span><span>'+all.length+' tappe</span></div>'+(d.dr?'<div class="hm-dr">'+d.dr+'</div>':'')+(d.wn?'<div class="hm-wn">'+d.wn+'</div>':'')+'</div>';
+  function rows(list){return list.map(function(s){return '<div class="hm-row" onclick="goTo('+di+',\''+s.t+'\')"><span class="hm-ic">'+(TI[s.tp]||"")+'</span><span class="hm-n">'+s.n+'</span><span class="hm-h">'+s.t+'</span></div>'}).join("")}
+  var must=all.filter(function(s){return s.tp==="Attrazione"&&!/opzionale, saltare|solo se avanza/i.test(s.ds)});
+  must=must.concat(all.filter(function(s){return s.tp==="Foto"})).slice(0,4);
+  if(must.length)h+='<div class="hm-sec"><div class="hm-sh">DA NON PERDERE</div>'+rows(must)+'</div>';
+  else{var tr=all.filter(function(s){return s.tp==="Trasporto"||s.tp==="Hotel"}).slice(0,5);if(tr.length)h+='<div class="hm-sec"><div class="hm-sh">SPOSTAMENTI CHIAVE</div>'+rows(tr)+'</div>'}
+  var eat=all.filter(function(s){return s.tp==="Cibo"||s.tp==="Mercato"}).slice(0,3);
+  if(eat.length)h+='<div class="hm-sec"><div class="hm-sh">MANGIARE</div>'+rows(eat)+'</div>';
+  var bk=HOME_BOOK.map(function(b,i){return {d:b[0],t:b[1],i:i}}).filter(function(b){return b.d===di});
+  if(bk.length)h+='<div class="hm-sec"><div class="hm-sh">DA PRENOTARE</div>'+bk.map(function(b){var on=false;try{on=localStorage.getItem(homeBk(di,b.i))==="1"}catch(e){}return '<div class="hm-row" onclick="homeTick('+di+','+b.i+')"><span class="hm-ic">'+(on?"☑":"☐")+'</span><span class="hm-n'+(on?" dn":"")+'">'+b.t+'</span></div>'}).join("")+'</div>';
+  h+='<button class="hm-go" onclick="goTo('+di+',\''+(all[0]?all[0].t:"")+'\')">Apri nel Piano ›</button>';
+  w.innerHTML=h;
 }
 
 init();
