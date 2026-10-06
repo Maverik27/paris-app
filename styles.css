@@ -502,3 +502,21 @@ html.light .shell::before{background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .nav .ni{width:42px;height:44px;border-radius:13px;font-size:23px}
 .nav .ni svg{width:25px;height:25px}
 .pg{padding-bottom:96px}
+
+/* nav v3: 5 voci, etichette, pillola attiva */
+.nav{justify-content:space-around;gap:0;padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+.nav button.nav-hide{display:none}
+.nav button{flex:1;max-width:96px;flex-direction:column;align-items:center;gap:4px;opacity:1;color:var(--tx3);font-size:11px;font-weight:500;padding:0}
+.nav .ni{width:60px;height:32px;border-radius:16px;font-size:22px;transition:.15s}
+.nav .ni svg{width:24px;height:24px}
+.nav .nl{line-height:1;color:var(--tx2)}
+.nav button.on .nl{color:var(--tx);font-weight:700}
+.nav button.on .ni{background:color-mix(in srgb,var(--nc,var(--acc)) 24%,transparent)}
+.nav button[data-p="more"]{--nc:#94a3b8}
+.pg{padding-bottom:104px}
+#more-ov{display:none;position:fixed;inset:0;z-index:190;background:rgba(0,0,0,.35)}
+#more-ov.on{display:block}
+#more-sheet{position:absolute;left:12px;right:12px;bottom:calc(86px + env(safe-area-inset-bottom));background:var(--bg2);border:1px solid var(--brd);border-radius:18px;padding:14px;display:flex;justify-content:space-around;box-shadow:0 8px 30px rgba(0,0,0,.3)}
+.more-it{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--tx);cursor:pointer;flex:1}
+.more-it .ni{width:56px;height:44px;border-radius:14px;font-size:24px;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--nc) 20%,transparent)}
+.more-it .ni svg{width:26px;height:26px}
