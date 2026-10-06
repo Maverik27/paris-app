@@ -1056,6 +1056,7 @@ function switchToTab(tabId){
     if(b.dataset.p===tabId)b.classList.add("on");
   });
   updateHeader(tabId);
+  if(tabId==="p2")homeReset();
   if(tabId==="p1"&&gpsMap)setTimeout(function(){gpsMap.invalidateSize();renderDayMarkers()},100);
 }
 
@@ -1116,7 +1117,17 @@ function getMetroWarning(stop){
 }
 
 
+var homeCat="";
+function homeReset(){
+  homeCat="";
+  var si=document.getElementById("si");if(si)si.value="";
+  var r=document.getElementById("srs"),nc=document.getElementById("nom-results");
+  if(r)r.innerHTML="";if(nc)nc.innerHTML="";
+  homeVis(true);
+}
 function filterCat(cat){
+  if(homeCat===cat){homeReset();return}
+  homeCat=cat;
   homeVis(false);
   // Clear search input and filter by category
   var q=document.getElementById("si").value.trim().toLowerCase();
@@ -1226,7 +1237,7 @@ function renderDayMarkers(){
   else gpsMap.setView(bounds[0],14);
 }
 
-function renderNav(){document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pg").forEach(function(x){x.classList.remove("on")});b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on");updateHeader(b.dataset.p);if(b.dataset.p==="p1"&&gpsMap)setTimeout(function(){gpsMap.invalidateSize();renderDayMarkers()},100)}})}
+function renderNav(){document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pg").forEach(function(x){x.classList.remove("on")});b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on");updateHeader(b.dataset.p);if(b.dataset.p==="p2")homeReset();if(b.dataset.p==="p1"&&gpsMap)setTimeout(function(){gpsMap.invalidateSize();renderDayMarkers()},100)}})}
 function renderPills(){var c=document.getElementById("pls");c.innerHTML=DAYS.map(function(d,i){return '<div class="pl'+(i===0?" on":"")+'" data-i="'+i+'">'+d.pl+'</div>'}).join("");c.querySelectorAll(".pl").forEach(function(p){p.onclick=function(){selDay(+p.dataset.i)}})}
 function selDay(i){cD=i;document.querySelectorAll(".pl").forEach(function(x){x.classList.remove("on")});document.querySelector('.pl[data-i="'+i+'"]').classList.add("on");renderDay(i);renderDayMarkers();document.querySelector('.pl[data-i="'+i+'"]').scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})}
 function allItems(d){var a=[];d.zones.forEach(function(z){z.items.forEach(function(s,si){a.push(s)})});return a}
@@ -1373,6 +1384,7 @@ function renderSearch(){
   document.getElementById("scp").innerHTML=h;
 }
 function doSearch(){
+  homeCat="";
   var q=document.getElementById("si").value.trim().toLowerCase();
   var r=document.getElementById("srs");
   var nc=document.getElementById("nom-results");
