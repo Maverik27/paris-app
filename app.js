@@ -888,16 +888,34 @@ function renderDrinkStats(st,total){
 }
 
 var TAB_HEADERS = {
-  p1: {name:"Paris App", icon:CONFIG.iconFavicon},
+  p1: {name:"Itinerario", icon:CONFIG.iconFavicon},
   p2: {name:"Cerca", icon:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Crect%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%227%22%20fill%3D%22%233b82f6%22/%3E%3Ccircle%20cx%3D%2213%22%20cy%3D%2213%22%20r%3D%226%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22/%3E%3Cpath%20d%3D%22M18%2018l5%205%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E"},
   p3: {name:"Trasporti", icon:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Crect%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%227%22%20fill%3D%22%23ef4444%22/%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2215%22%20r%3D%229%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22/%3E%3Crect%20x%3D%226%22%20y%3D%2212.5%22%20width%3D%2218%22%20height%3D%225%22%20rx%3D%22.5%22%20fill%3D%22%23fff%22/%3E%3C/svg%3E"},
   p4: {name:"Meteo", icon:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Crect%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%227%22%20fill%3D%22%230ea5e9%22/%3E%3Ccircle%20cx%3D%2214%22%20cy%3D%2213%22%20r%3D%225%22%20fill%3D%22%23fbbf24%22/%3E%3Cpath%20d%3D%22M14%205v2M14%2021v2M6%2013H4M24%2013h-2M7.5%207.5l1.5%201.5M19%2019l1.5%201.5M7.5%2018.5l1.5-1.5M19%207l1.5-1.5%22%20stroke%3D%22%23fbbf24%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E"},
   p6: {name:"Drink Counter", icon:CONFIG.iconPint},
   p5: {name:"Info", icon:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Crect%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%227%22%20fill%3D%22%236b7280%22/%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2210%22%20r%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20x%3D%2213%22%20y%3D%2214%22%20width%3D%224%22%20height%3D%229%22%20rx%3D%221%22%20fill%3D%22%23fff%22/%3E%3C/svg%3E"}
 };
-TAB_HEADERS.p2={name:"La mia giornata",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#a855f7"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F5FC}</text></svg>')};
-TAB_HEADERS.p7={name:"Dove mangiare",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#06b6d4"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F37D}</text></svg>')};
+TAB_HEADERS.p2={name:"Home",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#a855f7"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F5FC}</text></svg>')};
+TAB_HEADERS.p7={name:"Cibo",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#06b6d4"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F37D}</text></svg>')};
+var NAV_LBL={p2:"Home",p1:"Itinerario",p7:"Cibo",p6:"Drink",more:"Altro"};
+var MORE_TABS=["p3","p4","p5"];
+function toggleMore(){
+  var ov=document.getElementById("more-ov"),sh=document.getElementById("more-sheet");
+  if(!ov)return;
+  if(ov.classList.contains("on")){ov.classList.remove("on");return}
+  var names={p3:"Trasporti",p4:"Meteo",p5:"Info"};
+  sh.innerHTML=MORE_TABS.map(function(t){var b=document.querySelector('.nav button[data-p="'+t+'"] .ni');return '<div class="more-it" style="--nc:'+getComputedStyle(document.querySelector('.nav button[data-p="'+t+'"]')).getPropertyValue("--nc")+'" onclick="document.getElementById(\'more-ov\').classList.remove(\'on\');switchToTab(\''+t+'\')"><span class="ni">'+(b?b.innerHTML:"")+'</span><span>'+names[t]+'</span></div>'}).join("");
+  ov.classList.add("on");
+}
+function navDecorate(){
+  document.querySelectorAll(".nav button").forEach(function(b){
+    if(b.querySelector(".nl")||!NAV_LBL[b.dataset.p])return;
+    var s=document.createElement("span");s.className="nl";s.textContent=NAV_LBL[b.dataset.p];b.appendChild(s);
+  });
+}
 function updateHeader(tabId){
+  var mb=document.querySelector('.nav button[data-p="more"]');
+  if(mb)mb.classList.toggle("on",MORE_TABS.indexOf(tabId)>=0);
   if(tabId==="p7"&&typeof foodOnOpen==="function")foodOnOpen();
   var cfg=TAB_HEADERS[tabId]||TAB_HEADERS.p1;
   document.getElementById("hdr-name").textContent=cfg.name;
@@ -1195,7 +1213,7 @@ function doLocate(){
 }
 
 function init(){
-  renderNav();renderPills();LIVE_DAYS=loadDays();
+  renderNav();navDecorate();renderPills();LIVE_DAYS=loadDays();
 checkVersion();
 renderDay(0);renderSearch();renderTr();renderMt();renderIf();renderFood();renderBeerPage();
   var _t=homeToday();homeDay=_t>=0?_t:0;renderHome();updateHeader("p2");
@@ -1237,7 +1255,7 @@ function renderDayMarkers(){
   else gpsMap.setView(bounds[0],14);
 }
 
-function renderNav(){document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pg").forEach(function(x){x.classList.remove("on")});b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on");updateHeader(b.dataset.p);if(b.dataset.p==="p2")homeReset();if(b.dataset.p==="p1"&&gpsMap)setTimeout(function(){gpsMap.invalidateSize();renderDayMarkers()},100)}})}
+function renderNav(){document.querySelectorAll(".nav button").forEach(function(b){b.onclick=function(){if(b.dataset.p==="more"){toggleMore();return}document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("on")});document.querySelectorAll(".pg").forEach(function(x){x.classList.remove("on")});b.classList.add("on");document.getElementById(b.dataset.p).classList.add("on");updateHeader(b.dataset.p);if(b.dataset.p==="p2")homeReset();if(b.dataset.p==="p1"&&gpsMap)setTimeout(function(){gpsMap.invalidateSize();renderDayMarkers()},100)}})}
 function renderPills(){var c=document.getElementById("pls");c.innerHTML=DAYS.map(function(d,i){return '<div class="pl'+(i===0?" on":"")+'" data-i="'+i+'">'+d.pl+'</div>'}).join("");c.querySelectorAll(".pl").forEach(function(p){p.onclick=function(){selDay(+p.dataset.i)}})}
 function selDay(i){cD=i;document.querySelectorAll(".pl").forEach(function(x){x.classList.remove("on")});document.querySelector('.pl[data-i="'+i+'"]').classList.add("on");renderDay(i);renderDayMarkers();document.querySelector('.pl[data-i="'+i+'"]').scrollIntoView({behavior:"smooth",inline:"center",block:"nearest"})}
 function allItems(d){var a=[];d.zones.forEach(function(z){z.items.forEach(function(s,si){a.push(s)})});return a}
