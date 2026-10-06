@@ -895,7 +895,9 @@ var TAB_HEADERS = {
   p6: {name:"Drink Counter", icon:CONFIG.iconPint},
   p5: {name:"Info", icon:"data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2230%22%20height%3D%2230%22%20viewBox%3D%220%200%2030%2030%22%3E%3Crect%20width%3D%2230%22%20height%3D%2230%22%20rx%3D%227%22%20fill%3D%22%236b7280%22/%3E%3Ccircle%20cx%3D%2215%22%20cy%3D%2210%22%20r%3D%222%22%20fill%3D%22%23fff%22/%3E%3Crect%20x%3D%2213%22%20y%3D%2214%22%20width%3D%224%22%20height%3D%229%22%20rx%3D%221%22%20fill%3D%22%23fff%22/%3E%3C/svg%3E"}
 };
+TAB_HEADERS.p7={name:"Dove mangiare",icon:"data:image/svg+xml,"+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30"><rect width="30" height="30" rx="7" fill="#06b6d4"/><text x="15" y="21" font-size="16" text-anchor="middle">\u{1F37D}</text></svg>')};
 function updateHeader(tabId){
+  if(tabId==="p7"&&typeof foodOnOpen==="function")foodOnOpen();
   var cfg=TAB_HEADERS[tabId]||TAB_HEADERS.p1;
   document.getElementById("hdr-name").textContent=cfg.name;
   document.getElementById("hdr-ico").src=cfg.icon;
@@ -1019,7 +1021,7 @@ function showGuide(){
     {t:"\u{1F687} Trasporti",d:"Stato in tempo reale di metro e RER A/B. Serve la chiave PRIM in config.js (primKey), altrimenti c'\u00e8 il link all'info traffico RATP. Premi 'Aggiorna' per i dati pi\u00f9 recenti."},
     {t:"\u2600\ufe0f Meteo",d:"Previsioni con temperatura, pioggia e vento. Si aggiorna automaticamente. Alba e tramonto visibili nella card giornata."},
     {t:"\u{1F377} Drink Counter",d:"Conta vino, birra, drink e distillati con +/-. Sblocca achievement e vedi le statistiche per giorno."},
-    {t:"\u{1F37D} Dove mangiare",d:"Nella tab Info trovi una lista di street food, boulangerie e bistrot con link a Google Maps."},
+    {t:"\u{1F37D} Dove mangiare",d:"Nella tab Mangiare cerchi un locale o un piatto vicino a te (GPS) o all'hotel, filtri la selezione e apri Maps, indicazioni e orari su Google."},
     {t:"\u{1F512} PIN",d:"L'app \u00e8 protetta da PIN a 6 cifre. Modificabile in config.js."},
     {t:"\u{1F504} Ripristina",d:"Nel menu (\u2699), 'Ripristina itinerario' riporta tutto alla versione originale."}
   ];
@@ -1036,7 +1038,7 @@ function showGuide(){
 
 
 /* --- Swipe: days on Piano, tabs everywhere --- */
-var TAB_ORDER=["p1","p2","p3","p4","p6","p5"];
+var TAB_ORDER=["p1","p2","p3","p4","p7","p6","p5"];
 var swStartX=0,swStartY=0;
 
 function getActiveTab(){
@@ -1180,7 +1182,7 @@ function doLocate(){
 function init(){
   renderNav();renderPills();LIVE_DAYS=loadDays();
 checkVersion();
-renderDay(0);renderSearch();renderTr();renderMt();renderIf();renderBeerPage();
+renderDay(0);renderSearch();renderTr();renderMt();renderIf();renderFood();renderBeerPage();
   document.getElementById("si").addEventListener("input",doSearch);
   var el=document.getElementById("dc");
   // day swipe handled by initSwipe()
@@ -1650,19 +1652,6 @@ function refreshInfo(){renderIf()}
 function renderIf(){
   var h='<div class="if-wrap">';
   
-  // Dove mangiare
-  h+='<div class="if-card"><div class="if-card-hdr">DOVE MANGIARE</div>';
-  var lastCat="";
-  FOOD.forEach(function(f,i){
-    if(f.c!==lastCat){lastCat=f.c;h+='<div style="font-size:11px;font-weight:700;color:var(--tx3);letter-spacing:.5px;text-transform:uppercase;padding:'+(i?'12px':'4px')+' 0 6px">'+f.c+'</div>'}
-    var url="https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(f.n+" "+f.a);
-    h+='<a class="if-row if-brd" href="'+url+'" target="_blank" style="text-decoration:none;color:inherit">';
-    h+='<div class="if-ico" style="background:var(--wrns)">\u{1F37D}</div>';
-    h+='<div class="if-info"><div class="if-info-n">'+f.n+'</div><div class="if-info-d">'+f.z+' - '+f.d+'</div></div></a>';
-  });
-  h+='<div style="font-size:11px;color:var(--tx3);padding-top:8px">Link a Google Maps. Orari e aperture da verificare.</div>';
-  h+='</div>';
-
   // Numeri utili
   h+='<div class="if-card"><div class="if-card-hdr">NUMERI UTILI</div>';
   var nums=[
@@ -1711,6 +1700,138 @@ function renderIf(){
   h+='<div class="if-footer">Paris App v'+CONFIG.version+' \u{1F950}</div>';
   h+='</div>';
   document.getElementById("ifw").innerHTML=h;
+}
+
+/* --- Dove mangiare (tab p7) --- */
+var FOOD_CATS=[["all","Tutti"],["Street food e veloce","Street food"],["Boulangerie e dolci","Dolci"],["Bistrot e brasserie","Bistrot"],["Vicino all'hotel","Vicino hotel"]];
+var FOOD_QUICK=["Crêpes","Falafel","Boulangerie","Bistrot","Vino","Brunch","Dolci","Gelato"];
+var FOOD_KW={
+  "L'As du Fallafel":"falafel pranzo vegetariano",
+  "Marché des Enfants Rouges":"pranzo mercato street food",
+  "Breizh Café":"crepes galette pranzo",
+  "Rue Cler":"pranzo panini formaggi",
+  "Stohrer":"colazione dolci pasticceria",
+  "Du Pain et des Idées":"colazione pane dolci",
+  "Berthillon":"gelato dessert dolci",
+  "Bouillon Chartier":"cena pranzo francese tradizionale",
+  "Bouillon Pigalle":"cena pranzo francese tradizionale",
+  "Rue des Martyrs":"colazione brunch"
+};
+var foodMode="me",foodCat="all",foodQ="",foodPos=null,foodStatus="idle";
+
+function normTxt(s){return (s||"").toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
+function fEnc(s){return encodeURIComponent(s)}
+function foodHay(f){return normTxt([f.n,f.z,f.d,f.c,f.a,FOOD_KW[f.n]||""].join(" "))}
+
+function foodFiltered(){
+  var toks=normTxt(foodQ).split(/\s+/).filter(Boolean);
+  return FOOD.filter(function(f){
+    if(foodCat!=="all"&&f.c!==foodCat)return false;
+    var hay=foodHay(f);
+    return toks.every(function(t){return hay.indexOf(t)>=0||(t.length>3&&hay.indexOf(t.slice(0,-1))>=0)});
+  });
+}
+
+function foodCenter(){
+  if(foodMode==="hotel")return {lat:CONFIG.hotelLat,lng:CONFIG.hotelLng};
+  return foodPos||window.USER_POS||null;
+}
+
+function foodLocate(){
+  if(!navigator.geolocation){foodStatus="error";updateFoodUi();return}
+  foodStatus="loading";updateFoodUi();
+  navigator.geolocation.getCurrentPosition(function(p){
+    foodPos={lat:p.coords.latitude,lng:p.coords.longitude};
+    window.USER_POS=foodPos;
+    foodStatus="ok";updateFoodUi();
+  },function(e){
+    foodStatus=e&&e.code===1?"denied":"error";updateFoodUi();
+  },{enableHighAccuracy:true,timeout:10000,maximumAge:60000});
+}
+
+function foodOnOpen(){
+  if(foodMode==="me"&&foodStatus==="idle")foodLocate();
+}
+
+function foodNoteHtml(){
+  var upd=' <a href="#" id="fd-upd">Aggiorna posizione</a>';
+  if(foodMode==="hotel")return "Cerco intorno a Hotel Royal Mansart.";
+  if(foodStatus==="loading")return "Rilevo la tua posizione...";
+  if(foodStatus==="ok")return "Posizione rilevata, cerco intorno a te."+upd;
+  if(foodStatus==="denied")return "Permesso di posizione negato. Abilitalo nelle impostazioni del browser per questo sito, poi tocca Aggiorna posizione. Intanto Maps userà la posizione del telefono."+upd;
+  if(foodStatus==="error")return "Posizione non disponibile. Maps userà comunque la posizione del telefono."+upd;
+  return "Per cercare intorno a te serve la posizione."+upd;
+}
+
+function updateFoodLinks(){
+  var m=document.getElementById("fd-maps"),g=document.getElementById("fd-goog");
+  if(!m||!g)return;
+  var q=foodQ.trim()||"ristoranti",c=foodCenter();
+  m.href="https://www.google.com/maps/search/"+fEnc(q)+(c?"/@"+c.lat.toFixed(5)+","+c.lng.toFixed(5)+",16z":"");
+  g.href="https://www.google.com/search?q="+fEnc((foodQ.trim()||"dove mangiare")+" "+(foodMode==="hotel"?"vicino "+CONFIG.hotelAddr+" Parigi":"vicino a me"));
+}
+
+function renderFoodList(){
+  var list=document.getElementById("fd-list"),cnt=document.getElementById("fd-count"),cats=document.getElementById("fd-cats");
+  if(!list)return;
+  cats.innerHTML=FOOD_CATS.map(function(c){return '<span class="fd-chip'+(foodCat===c[0]?' on':'')+'" data-c="'+c[0].replace(/"/g,"&quot;")+'">'+c[1]+'</span>'}).join("");
+  var res=foodFiltered();
+  cnt.textContent=res.length?(res.length===FOOD.length?"Selezione":res.length+(res.length===1?" risultato":" risultati")+" nella selezione"):"";
+  if(!res.length){
+    list.innerHTML='<div class="fd-item fd-empty">Nessun locale nella selezione'+(foodQ.trim()?' per «'+foodQ.trim().replace(/</g,"&lt;")+'»':'')+'.<br>Usa Su Maps o Su Google qui sopra per cercarlo intorno a te.</div>';
+    return;
+  }
+  list.innerHTML=res.map(function(f){
+    var place=f.n+" "+f.a;
+    return '<div class="fd-item"><div class="fd-top"><div><div class="fd-nm">'+f.n+'</div><div class="fd-ds">'+f.d+'</div></div><span class="fd-tag">'+f.z+'</span></div>'
+      +'<div class="fd-acts">'
+      +'<a target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&query='+fEnc(place)+'">\u{1F4CD} Maps</a>'
+      +'<a target="_blank" rel="noopener" href="https://www.google.com/maps/dir/?api=1&destination='+fEnc(place)+'">\u{1F9ED} Indicazioni</a>'
+      +'<a target="_blank" rel="noopener" href="https://www.google.com/search?q='+fEnc(place+" orari di apertura")+'">\u{1F552} Orari</a>'
+      +'</div></div>';
+  }).join("");
+}
+
+function updateFoodUi(){
+  var n=document.getElementById("fd-note");
+  if(n)n.innerHTML=foodNoteHtml();
+  updateFoodLinks();
+}
+
+function renderFood(){
+  var w=document.getElementById("foodw");
+  if(!w)return;
+  var h='<div class="fd-wrap"><div class="fd-box">';
+  h+='<input class="fd-in" id="fd-q" type="search" placeholder="Crêpes, falafel, vino, brunch..." autocomplete="off">';
+  h+='<div class="fd-seg"><button id="fd-s1" class="on">\u{1F4CD} Vicino a me</button><button id="fd-s2">\u{1F3E8} Vicino all\'hotel</button></div>';
+  h+='<div class="fd-chips" id="fd-quick">'+FOOD_QUICK.map(function(x){return '<span class="fd-chip" data-q="'+x+'">'+x+'</span>'}).join("")+'</div>';
+  h+='<div class="fd-go"><a id="fd-maps" class="p" target="_blank" rel="noopener">\u{1F5FA} Su Maps</a><a id="fd-goog" target="_blank" rel="noopener">\u{1F50D} Su Google</a></div>';
+  h+='<div class="fd-note" id="fd-note"></div></div>';
+  h+='<div class="fd-chips" id="fd-cats" style="margin:0"></div><div class="fd-hdr" id="fd-count"></div><div id="fd-list"></div></div>';
+  w.innerHTML=h;
+  var q=document.getElementById("fd-q");
+  q.oninput=function(){foodQ=q.value;renderFoodList();updateFoodLinks()};
+  document.getElementById("fd-quick").onclick=function(e){
+    var t=e.target.closest(".fd-chip");if(!t)return;
+    q.value=t.getAttribute("data-q");foodQ=q.value;renderFoodList();updateFoodLinks();
+  };
+  document.getElementById("fd-cats").onclick=function(e){
+    var t=e.target.closest(".fd-chip");if(!t)return;
+    foodCat=t.getAttribute("data-c");renderFoodList();
+  };
+  function setMode(m){
+    foodMode=m;
+    document.getElementById("fd-s1").classList.toggle("on",m==="me");
+    document.getElementById("fd-s2").classList.toggle("on",m==="hotel");
+    if(m==="me"&&foodStatus!=="ok"&&foodStatus!=="loading")foodLocate();
+    else updateFoodUi();
+  }
+  document.getElementById("fd-s1").onclick=function(){setMode("me")};
+  document.getElementById("fd-s2").onclick=function(){setMode("hotel")};
+  document.getElementById("fd-note").onclick=function(e){
+    if(e.target&&e.target.id==="fd-upd"){e.preventDefault();foodLocate()}
+  };
+  renderFoodList();updateFoodUi();
 }
 
 init();
