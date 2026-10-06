@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Paris App">
+<!--<link rel="icon" type="image/png" href="favicon.png">-->
+<link rel="icon" type="image/png" href="apple-touch-icon.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<link rel="stylesheet" href="styles.css">
+<title>Paris App</title>
+</head>
+<body>
+
+<!-- PIN Lock Screen -->
+<div class="lock" id="lockScreen">
+<!--<img class="lock-ico" src="favicon.png" alt="">-->
+<img class="lock-ico" src="apple-touch-icon.png" alt="">  
+<div class="lock-t">Paris App</div>
+<div class="lock-s">Inserisci PIN</div>
+<div class="pin-wrap" id="pinDots"></div>
+<div class="pin-pad" id="pinPad"></div>
+<div id="pinMsg" style="font-size:12px;color:var(--tx3);margin-top:8px;height:16px"></div>
+</div>
+
+<!-- App Shell -->
+<div class="shell">
+<div class="top">
+  <div>
+    <!--<h1><img class="top-ico" id="hdr-ico" src="favicon.png" alt=""><span id="hdr-name">Paris App</span></h1>-->
+    <h1><img class="top-ico" id="hdr-ico" src="apple-touch-icon.png" alt=""><span id="hdr-name">Paris App</span></h1>    
+  </div>
+  <button class="menu-btn" onclick="toggleMenu()">&#x22EE;</button>
+</div>
+
+<!-- Tab: Piano -->
+<div class="pg on" id="p1">
+  <div class="pills" id="pls"></div>
+  <div class="prog"><div class="prog-bar" id="pbar" style="width:0%"></div></div>
+  <div class="gps-wrap"><div id="gmap"></div><button class="gps-btn" onclick="doLocate()">&#x1F4CD; Tu sei qui</button></div>
+  <div id="dc"></div>
+</div>
+
+<!-- Tab: Cerca -->
+<div class="pg" id="p2">
+  <div class="srw">
+    <div class="srbox">
+      <input class="srin" type="text" id="si" placeholder="Cerca luogo, bar, metro...">
+    </div>
+    <div class="scps" id="scp"></div>
+    <div id="srs"></div>
+    <div id="nom-results"></div>
+  </div>
+</div>
+
+<!-- Tab: Trasporti -->
+<div class="pg" id="p3"><div class="iw" id="trw"></div></div>
+
+<!-- Tab: Meteo -->
+<div class="pg" id="p4"><div class="iw" id="mtw"></div></div>
+
+<!-- Tab: Drink Counter -->
+<div class="pg" id="p6"><div class="iw" id="beerw"></div></div>
+
+<!-- Tab: Info -->
+<div class="pg" id="p5"><div class="iw" id="ifw"></div></div>
+</div>
+
+<!-- Bottom Nav -->
+<nav class="nav">
+<button class="on" data-p="p1" title="Piano" aria-label="Piano"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect x="4" y="4" width="14" height="14" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M4 9h14M9 4v14M14 4v14" stroke="currentColor" stroke-width=".8" opacity=".4"/></svg></span></button>
+<button data-p="p2" title="Cerca" aria-label="Cerca"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="10" cy="10" r="5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M14 14l4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+<button data-p="p3" title="Trasporti" aria-label="Trasporti"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="1.5" fill="none"/><rect x="4" y="9.5" width="14" height="3" rx=".5" fill="currentColor"/></svg></span></button>
+<button data-p="p4" title="Meteo" aria-label="Meteo"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="10" r="3.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M11 4v2M11 16v2M5 10H3M19 10h-2M6 5.5l1.5 1.5M14.5 14l1.5 1.5M6 14.5l1.5-1.5M14.5 6l1.5-1.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></span></button>
+<button data-p="p6" title="Drink Counter" aria-label="Drink Counter"><span class="ni">🍷</span></button>
+<button data-p="p5" title="Info" aria-label="Info"><span class="ni"><svg width="20" height="20" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="7.5" r="1.5" fill="currentColor"/><rect x="9.5" y="10.5" width="3" height="7" rx="1" fill="currentColor"/></svg></span></button>
+</nav>
+
+<!-- Phrase Overlay -->
+<div class="ph-overlay" id="phrase-overlay" onclick="if(event.target===this)closePhrases()">
+  <div class="ph-panel"><div id="phrase-content"></div></div>
+</div>
+
+<!-- Edit Overlay -->
+<div class="ed-overlay" id="edit-overlay" onclick="if(event.target===this)closeEdit()">
+  <div class="ed-panel"><div id="edit-content"></div></div>
+</div>
+
+<!-- Menu Overlay -->
+<div class="app-menu" id="app-menu" onclick="if(event.target===this)closeMenu()">
+  <div class="menu-panel">
+    <div class="menu-item" onclick="showGuide()"><span>&#x1F4D6;</span> Guida</div>
+    <div class="menu-item" onclick="closeMenu();confirmReset()"><span>&#x1F504;</span> Ripristina itinerario</div>
+    <div class="menu-item" onclick="closeMenu();exportDiary()"><span>&#x1F4BE;</span> Esporta diario</div>
+    <div class="menu-item" onclick="toggleTheme()"><span id="theme-ico">&#x1F319;</span> <span id="theme-label">Tema chiaro</span></div>
+    <div class="menu-item" onclick="closeMenu()"><span>&#x2715;</span> Chiudi</div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="geo-override.js"></script>
+</body>
+</html>
