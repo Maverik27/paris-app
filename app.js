@@ -1704,7 +1704,7 @@ function renderIf(){
 
 /* --- Dove mangiare (tab p7) --- */
 var FOOD_CATS=[["all","Tutti"],["Street food e veloce","Street food"],["Boulangerie e dolci","Dolci"],["Bistrot e brasserie","Bistrot"],["Vicino all'hotel","Vicino hotel"]];
-var FOOD_QUICK=["Crêpes","Falafel","Boulangerie","Bistrot","Vino","Brunch","Dolci","Gelato"];
+var FOOD_QUICK=[["\u{1F950}","Colazione","colazione"],["\u{1F370}","Dolci","pasticceria dolci"],["\u{1F96A}","Street food","street food"],["\u{1F355}","Pizza","pizza"],["\u{1F35D}","Italiano","ristorante italiano"],["\u{1F956}","Baguette","boulangerie baguette"],["\u{1F377}","Cucina francese","cucina francese bistrot"],["\u{1F95E}","Crêpes","crêpes"],["\u{1F366}","Gelato","gelato"],["\u{1F377}","Vino e aperitivo","bar a vin aperitivo"],["\u{2615}","Caffè","caffè"],["\u{1F37D}","Ristoranti","ristoranti"]];
 var FOOD_KW={
   "L'As du Fallafel":"falafel pranzo vegetariano",
   "Marché des Enfants Rouges":"pranzo mercato street food",
@@ -1717,7 +1717,7 @@ var FOOD_KW={
   "Bouillon Pigalle":"cena pranzo francese tradizionale",
   "Rue des Martyrs":"colazione brunch"
 };
-var foodMode="me",foodCat="all",foodQ="",foodPos=null,foodStatus="idle";
+var foodMode="me",foodCat="all",foodQ="",foodOpen=false,foodPos=null,foodStatus="idle";
 
 function normTxt(s){return (s||"").toString().toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")}
 function fEnc(s){return encodeURIComponent(s)}
@@ -1766,9 +1766,11 @@ function foodNoteHtml(){
 function updateFoodLinks(){
   var m=document.getElementById("fd-maps"),g=document.getElementById("fd-goog");
   if(!m||!g)return;
-  var q=foodQ.trim()||"ristoranti",c=foodCenter();
+  var q=(foodQ.trim()||"ristoranti")+(foodOpen?" aperto ora":""),c=foodCenter();
+  var qa=document.querySelectorAll(".fd-qa");
+  for(var i=0;i<qa.length;i++)qa[i].href="https://www.google.com/maps/search/"+fEnc(qa[i].getAttribute("data-q")+(foodOpen?" aperto ora":""))+(c?"/@"+c.lat.toFixed(5)+","+c.lng.toFixed(5)+",16z":"");
   m.href="https://www.google.com/maps/search/"+fEnc(q)+(c?"/@"+c.lat.toFixed(5)+","+c.lng.toFixed(5)+",16z":"");
-  g.href="https://www.google.com/search?q="+fEnc((foodQ.trim()||"dove mangiare")+" "+(foodMode==="hotel"?"vicino "+CONFIG.hotelAddr+" Parigi":"vicino a me"));
+  g.href="https://www.google.com/search?q="+fEnc((foodQ.trim()||"dove mangiare")+(foodOpen?" aperto ora":"")+" "+(foodMode==="hotel"?"vicino "+CONFIG.hotelAddr+" Parigi":"vicino a me"));
 }
 
 function renderFoodList(){
@@ -1802,22 +1804,17 @@ function renderFood(){
   var w=document.getElementById("foodw");
   if(!w)return;
   var h='<div class="fd-wrap"><div class="fd-box">';
-  h+='<input class="fd-in" id="fd-q" type="search" placeholder="Crêpes, falafel, vino, brunch..." autocomplete="off">';
+  h+='<input class="fd-in" id="fd-q" type="search" placeholder="Cerca altro: sushi, kebab, brunch..." autocomplete="off">';
   h+='<div class="fd-seg"><button id="fd-s1" class="on">\u{1F4CD} Vicino a me</button><button id="fd-s2">\u{1F3E8} Vicino all\'hotel</button></div>';
-  h+='<div class="fd-chips" id="fd-quick">'+FOOD_QUICK.map(function(x){return '<span class="fd-chip" data-q="'+x+'">'+x+'</span>'}).join("")+'</div>';
+  h+='<div class="fd-chips" id="fd-quick"><span class="fd-chip" id="fd-open">\u{1F7E2} Aperto ora</span>'+FOOD_QUICK.map(function(x){return '<a class="fd-chip fd-qa" target="_blank" rel="noopener" data-q="'+x[2]+'">'+x[0]+" "+x[1]+'</a>'}).join("")+'</div>';
   h+='<div class="fd-go"><a id="fd-maps" class="p" target="_blank" rel="noopener">\u{1F5FA} Su Maps</a><a id="fd-goog" target="_blank" rel="noopener">\u{1F50D} Su Google</a></div>';
   h+='<div class="fd-note" id="fd-note"></div></div>';
-  h+='<div class="fd-chips" id="fd-cats" style="margin:0"></div><div class="fd-hdr" id="fd-count"></div><div id="fd-list"></div></div>';
+  h+='<div class="fd-note" style="margin-top:10px">I risultati si aprono su Google, sempre intorno alla tua posizione attuale. L\'orario di apertura lo vedi direttamente nella scheda del locale.</div></div>';
   w.innerHTML=h;
   var q=document.getElementById("fd-q");
-  q.oninput=function(){foodQ=q.value;renderFoodList();updateFoodLinks()};
-  document.getElementById("fd-quick").onclick=function(e){
-    var t=e.target.closest(".fd-chip");if(!t)return;
-    q.value=t.getAttribute("data-q");foodQ=q.value;renderFoodList();updateFoodLinks();
-  };
-  document.getElementById("fd-cats").onclick=function(e){
-    var t=e.target.closest(".fd-chip");if(!t)return;
-    foodCat=t.getAttribute("data-c");renderFoodList();
+  q.oninput=function(){foodQ=q.value;updateFoodLinks()};
+  document.getElementById("fd-open").onclick=function(e){
+    e.stopPropagation();foodOpen=!foodOpen;this.classList.toggle("on",foodOpen);updateFoodLinks();
   };
   function setMode(m){
     foodMode=m;
@@ -1831,7 +1828,7 @@ function renderFood(){
   document.getElementById("fd-note").onclick=function(e){
     if(e.target&&e.target.id==="fd-upd"){e.preventDefault();foodLocate()}
   };
-  renderFoodList();updateFoodUi();
+  updateFoodUi();
 }
 
 init();

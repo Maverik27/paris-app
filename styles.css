@@ -446,7 +446,7 @@ html.light .shell::before{background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .fd-seg button{flex:1;border:0;background:none;color:var(--tx2);font-size:13px;padding:8px 4px;border-radius:8px;font-family:var(--f);cursor:pointer}
 .fd-seg button.on{background:var(--bg2);color:var(--tx);font-weight:600}
 .fd-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
-.fd-chip{font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--brd);background:var(--bg3);color:var(--tx);cursor:pointer}
+.fd-chip{text-decoration:none;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--brd);background:var(--bg3);color:var(--tx);cursor:pointer}
 .fd-chip.on{background:var(--accs);border-color:var(--acc);color:var(--acc)}
 .fd-go{display:flex;gap:8px;margin-top:12px}
 .fd-go a{flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--brd);background:var(--bg3);color:var(--tx);font-size:14px;font-weight:600;text-decoration:none}
