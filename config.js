@@ -10,7 +10,7 @@ var CONFIG = {
   footer: "Paris App - Nov 2026 \ud83e\udd50",
 
   // Security (change before publishing)
-  pin: "202611",
+  pin: "201126",
 
   // Travel dates
   startDate: "2026-11-20",
