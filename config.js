@@ -5,12 +5,12 @@
 
 var CONFIG = {
   // App
-  version: "1.0.0",
+  version: "1.2.2",
   appName: "Paris App",
   footer: "Paris App - Nov 2026 \ud83e\udd50",
 
   // Security (change before publishing)
-  pin: "201126",
+  pin: "202611",
 
   // Travel dates
   startDate: "2026-11-20",
@@ -34,6 +34,7 @@ var CONFIG = {
   // Line status (PRIM - Ile-de-France Mobilites)
   // 1) register on https://prim.iledefrance-mobilites.fr and create an API key
   // 2) paste it in primKey below. If empty, the Transport tab shows a link to RATP traffic info.
+  bkDb: "https://mvk-paris-default-rtdb.europe-west1.firebasedatabase.app",
   primKey: "",
   primUrl: "https://prim.iledefrance-mobilites.fr/marketplace/v2/navitia/line_reports/line_reports",
   trafficLink: "https://www.ratp.fr/infos-trafic",

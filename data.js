@@ -63,8 +63,8 @@ var NOM_TYPE_MAP = {
 
 /* --- Itinerary --- */
 /* --- Helpers (compact stop builder) --- */
-function S(t,n,tp,ds,du,la,ln,ad,di,ws,pla,pln){
-  var o={t:t,n:n,tp:tp,ds:ds,la:la,ln:ln,ad:ad,di:di||"",ws:ws||[],bk:null,pla:pla===undefined?null:pla,pln:pln===undefined?null:pln};
+function S(t,n,tp,ds,du,la,ln,ad,di,ws,pla,pln,bk){
+  var o={t:t,n:n,tp:tp,ds:ds,la:la,ln:ln,ad:ad,di:di||"",ws:ws||[],bk:bk?{u:bk,l:"Prenota"}:null,pla:pla===undefined?null:pla,pln:pln===undefined?null:pln};
   if(du)o.du=du;
   return o;
 }
@@ -84,50 +84,48 @@ S("22:30","Navetta Beauvais - Porte Maillot","Trasporto","Navetta diretta per Pa
 S("23:50","Verso l'hotel","Trasporto","Taxi o Uber da Porte Maillot (~25 min). La metro potrebbe non essere più comoda a quest'ora.","~30 min",H_LA,H_LN,"Hotel Royal Mansart","",[],PMA_LA,PMA_LN),
 S("00:30","Hotel Royal Mansart","Hotel","Check-in tardivo. Avvisare l'hotel dell'orario di arrivo prima di partire.","",H_LA,H_LN,"1 Rue Mansart, 75009 Paris","",[W("⚠ Arrivo dopo mezzanotte","a")])]}]},
 
-{id:1,pl:"Sab 21",t:"Notre-Dame, Louvre e Palais Royal",wt:"4-10°C",rn:0,dr:"🧥 Giubbotto caldo, scarpe comode. Possibile pioggia.",wn:"",km:9,zones:[
+{id:1,pl:"Sab 21",t:"Notre-Dame, Marais, Natale e Montmartre",wt:"4-10°C",rn:0,dr:"🧥 Giubbotto caldo, scarpe comode. Possibile pioggia.",wn:"",km:8,zones:[
 {zone:"Mattina",items:[
-S("09:00","Colazione in hotel","Cibo","Inclusa nel soggiorno.","~45 min",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
+S("09:30","Colazione in hotel","Cibo","Inclusa nel soggiorno.","~1h",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
 {zone:"Île de la Cité",items:[
-S("10:15","Metro verso Cité","Trasporto","~30 min con un cambio. Usare Citymapper per il percorso aggiornato.","~35 min",48.8553,2.3469,"Cité","",[],48.8800,2.3388),
-S("10:50","Notre-Dame","Attrazione","Cattedrale riaperta dopo il restauro, ingresso gratuito. Coda variabile.","~1h",48.8530,2.3499,"6 Parvis Notre-Dame, 75004","",[W("📋 Prenotare slot gratuito","b")],48.8553,2.3469),
-S("12:00","Sainte-Chapelle","Attrazione","Vetrate gotiche del XIII secolo. Opzionale, saltare se c'è coda.","~45 min",48.8554,2.3450,"10 Bd du Palais, 75001","",[W("⭐ Opzionale","i"),W("📋 Prenotare","b")],48.8530,2.3499)]},
-{zone:"Pranzo e Senna",items:[
-S("12:55","Pranzo a Saint-Germain","Cibo","Rue de Buci e dintorni: bistrot, crêperie, plat du jour.","~1h 15min",48.8537,2.3392,"Rue de Buci, 75006","",[],48.8554,2.3450),
-S("14:15","Pont des Arts","Foto","Attraversare la Senna a piedi, vista su Pont Neuf e Île de la Cité.","~15 min",48.8583,2.3375,"Pont des Arts, 75006","",[],48.8537,2.3392)]},
-{zone:"Louvre",items:[
-S("14:30","Museo del Louvre","Attrazione","Percorso highlights: Gioconda, Venere di Milo, Nike di Samotracia. Non serve vedere tutto.","~3h",48.8606,2.3376,"Rue de Rivoli, 75001","",[W("📋 Prenotare slot orario","b"),W("⚠ Verificare orario chiusura","a")],48.8583,2.3375)]},
-{zone:"Palais Royal e cantina",items:[
-S("17:30","Palais Royal","Attrazione","Giardini e colonne di Buren, a due passi dal Louvre.","~30 min",48.8637,2.3371,"Place du Palais Royal, 75001","",[],48.8606,2.3376),
-S("18:00","Galerie Vivienne","Attrazione","Passage coperto ottocentesco con mosaici.","~20 min",48.8668,2.3405,"4 Rue des Petits Champs, 75002","",[],48.8637,2.3371),
-S("18:25","Legrand Filles et Fils","Bar/Cantina","Cave e bar à vins storico nella Galerie Vivienne. Degustazione di vini, solo se avanza tempo.","~1h",48.8666,2.3408,"1 Rue de la Banque, 75002","",[W("⭐ Opzionale","i"),W("⚠ Verificare orari","a")],48.8668,2.3405)]},
-{zone:"Cena e rientro",items:[
-S("19:45","Bouillon Chartier","Cibo","Brasserie storica a prezzi contenuti, cucina francese classica. Di solito niente prenotazione: possibile coda.","~1h 30min",48.8719,2.3427,"7 Rue du Faubourg Montmartre, 75009","",[W("⚠ Possibile coda","a")],48.8666,2.3408),
-S("21:30","Ultima bevuta","Bar/Cantina","Un bicchiere in zona Pigalle o Rue des Martyrs, verso l'hotel.","~1h",48.8825,2.3375,"Pigalle, 75009","",[],48.8719,2.3427),
-S("22:45","Rientro hotel","Trasporto","A piedi o in metro, ~15 min.","",H_LA,H_LN,"Hotel Royal Mansart","",[],48.8825,2.3375)]}]},
-
-{id:2,pl:"Dom 22",t:"Parc des Princes, Torre Eiffel, Senna e Montmartre",wt:"4-10°C",rn:0,dr:"🧥 Giubbotto caldo, cappello. Sul battello fa freddo.",wn:"",km:11,zones:[
-{zone:"Mattina",items:[
-S("09:00","Colazione in hotel","Cibo","Inclusa nel soggiorno.","~45 min",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
-{zone:"Parc des Princes",items:[
-S("09:45","Metro verso Parc des Princes","Trasporto","~40 min con cambi. Scendere a Porte de Saint-Cloud (M9) o Porte d'Auteuil (M10). Usare Citymapper.","~40 min",48.8414,2.2530,"Parc des Princes","",[],H_LA,H_LN),
-S("10:30","Parc des Princes","Attrazione","Stadio del PSG. Nessuna partita casalinga in programma (il PSG gioca a Nizza sabato 21). Tour dello stadio e boutique da verificare.","~1h",48.8414,2.2530,"24 Rue du Commandant Guilbaud, 75016","",[W("⭐ Opzionale","i"),W("📋 Verificare tour e orari","b")],48.8414,2.2530),
-S("11:45","M9 verso Trocadéro","Trasporto","M9 diretta da Porte de Saint-Cloud a Trocadéro, ~20 min.","~25 min",48.8616,2.2893,"Trocadéro","",[],48.8414,2.2530)]},
-{zone:"Torre Eiffel",items:[
-S("12:15","Trocadéro","Foto","Vista classica sulla Torre Eiffel dai giardini.","~20 min",48.8616,2.2893,"Place du Trocadéro, 75016","",[]),
-S("12:45","Torre Eiffel","Attrazione","Passeggiata sotto la torre. Salita opzionale: prenotare l'orario online.","~45 min",48.8584,2.2945,"5 Av. Anatole France, 75007","",[W("⭐ Salita opzionale","i"),W("📋 Prenotare online","b")],48.8616,2.2893),
-S("13:45","Pranzo a Rue Cler","Mercato","Via pedonale con botteghe: formaggi, panini, crêpes. Pranzo informale.","~1h 15min",48.8562,2.3062,"Rue Cler, 75007","",[],48.8584,2.2945)]},
-{zone:"Senna",items:[
-S("15:15","Verso Pont de l'Alma","Passeggiata","A piedi lungo la Senna, ~20 min.","~20 min",48.8640,2.3010,"Pont de l'Alma, 75008","",[],48.8562,2.3062),
-S("15:45","Giro in battello sulla Senna","Attrazione","Crociera di circa un'ora al tramonto, possibilmente con aperitivo. Verificare operatori, orari e formula.","~1h 15min",48.8640,2.3010,"Port de la Conférence, Pont de l'Alma","",[W("📋 Prenotare (aperitivo se disponibile)","b"),W("⚠ Verificare orari","a")])]},
-{zone:"Arc de Triomphe e Champs-Élysées",items:[
-S("17:15","Arc de Triomphe","Foto","A piedi lungo Avenue Marceau (~15 min). Arco illuminato al buio.","~30 min",48.8738,2.2950,"Place Charles de Gaulle, 75008","",[],48.8640,2.3010),
-S("17:50","Champs-Élysées","Passeggiata","Passeggiata sul tratto alto del viale. Eventuali luminarie natalizie da verificare.","~30 min",48.8705,2.3040,"Av. des Champs-Élysées, 75008","",[],48.8738,2.2950)]},
+S("10:30","Metro verso Cité","Trasporto","~30 min con un cambio. Usare Citymapper per il percorso aggiornato.","~35 min",48.8553,2.3469,"Cité","",[],48.8800,2.3388),
+S("11:15","Notre-Dame","Attrazione","Cattedrale riaperta dopo il restauro, ingresso gratuito. Coda variabile.","~1h",48.8530,2.3499,"6 Parvis Notre-Dame, 75004","",[],48.8553,2.3469)]},
+{zone:"Marais",items:[
+S("12:30","Passeggiata Île Saint-Louis e Marais","Passeggiata","Dalla cattedrale sull'Île Saint-Louis (qui c'è la gelateria Berthillon) e poi nel Marais fino a Rue Charlot.","~35 min",48.8517,2.3567,"Rue Saint-Louis en l'Île, 75004","",[],48.8530,2.3499),
+S("13:15","Panino da Caractère de Cochon","Cibo","Charcuterie nel Marais: panini con prosciutto e salumi (circa 8-15 €), da portar via. Non risultano posti a sedere: si mangia in piedi o nei dintorni.","~30 min",48.8630,2.3633,"42 Rue Charlot, 75003","",[W("⚠ Verificare orari","a")],48.8517,2.3567),
+S("14:00","Vino da Le Barav","Bar/Cantina","Wine bar nel Marais, vino al calice da circa 5 €. Verificare orari di apertura del sabato.","~2h 30min",48.8636,2.3627,"6 Rue Charles-François Dupuis, 75003","",[W("⚠ Verificare orari","a")],48.8630,2.3633)]},
+{zone:"Tuileries e Opéra",items:[
+S("16:30","Verso le Tuileries","Trasporto","Metro con un cambio o taxi/Uber dal Marais, ~20 min. Usare Citymapper.","~25 min",48.8638,2.3275,"Jardin des Tuileries, 75001","",[],48.8636,2.3627),
+S("17:00","Mercatino di Natale delle Tuileries","Attrazione","Mercatino e luna park nel Jardin des Tuileries, aperto dal 14 novembre. Ingresso gratuito, orari da confermare. Bello al tramonto, con le luci accese.","~1h",48.8638,2.3275,"Jardin des Tuileries, 75001","",[W("⚠ Verificare orari","a")],48.8638,2.3275),
+S("18:00","Passeggiata Place Vendôme e Opéra","Passeggiata","Da Rue de Castiglione a Place Vendôme, poi Rue de la Paix fino all'Opéra Garnier: vetrine natalizie lungo tutto il percorso.","~30 min",48.8719,2.3316,"Place de l'Opéra, 75009","",[],48.8638,2.3275),
+S("18:30","Terrazzo Galeries Lafayette","Attrazione","Terrazzo gratuito all'ottavo piano del grande magazzino, con vista su Opéra e Torre Eiffel. Alle 19:00 la Torre scintilla per 5 minuti. Può chiudere con il maltempo.","~45 min",48.8737,2.3320,"40 Boulevard Haussmann, 75009","",[W("⚠ Aperto fino alle 20:30, chiuso se piove","a")],48.8719,2.3316)]},
 {zone:"Montmartre",items:[
-S("18:30","M2 verso Blanche","Trasporto","M2 diretta da Charles de Gaulle - Étoile a Blanche, ~20 min.","~25 min",48.8838,2.3323,"Blanche","",[],48.8705,2.3040),
-S("19:00","Sacré-Cœur","Attrazione","Salita a piedi da Abbesses o con la funicolare. Vista su Parigi di sera.","~1h",48.8867,2.3431,"35 Rue du Chevalier de la Barre, 75018","",[],48.8838,2.3323),
-S("20:15","Cena a Montmartre","Cibo","Bistrot nella zona di Abbesses.","~1h 30min",48.8841,2.3388,"Rue des Abbesses, 75018","",[],48.8867,2.3431),
-S("22:00","Ultima bevuta","Bar/Cantina","Un ultimo bicchiere vicino all'hotel.","~45 min",48.8825,2.3375,"Pigalle, 75009","",[],48.8841,2.3388),
-S("22:45","Rientro hotel","Trasporto","Pochi minuti a piedi.","",H_LA,H_LN,"Hotel Royal Mansart","",[],48.8825,2.3375)]}]},
+S("19:30","Verso Montmartre","Trasporto","Metro o taxi/Uber fino ad Abbesses, ~25 min. Usare Citymapper.","~30 min",48.8844,2.3382,"Abbesses, 75018","",[],48.8737,2.3320),
+S("20:00","Sacré-Cœur","Attrazione","Salita a piedi da Abbesses o con la funicolare, vista su Parigi illuminata.","~45 min",48.8867,2.3431,"35 Rue du Chevalier de la Barre, 75018","",[],48.8844,2.3382),
+S("21:00","Cena ad Abbesses","Cibo","Bistrot nella zona di Abbesses, a pochi minuti dall'hotel. Da scegliere e prenotare.","~2h",48.8841,2.3388,"Rue des Abbesses, 75018","",[],48.8860,2.3410),
+S("23:15","Rientro hotel","Trasporto","A piedi o in metro, ~15 min.","",H_LA,H_LN,"Hotel Royal Mansart","",[],48.8825,2.3375)]}]},
+
+{id:2,pl:"Dom 22",t:"Arc de Triomphe, Torre Eiffel e Senna",wt:"4-10°C",rn:0,dr:"🧥 Giubbotto caldo, cappello. Sul battello fa freddo.",wn:"",km:8,zones:[
+{zone:"Mattina",items:[
+S("09:30","Colazione in hotel","Cibo","Inclusa nel soggiorno.","~1h",H_LA,H_LN,"Hotel Royal Mansart","",[])]},
+{zone:"Arc de Triomphe e Champs-Élysées",items:[
+S("10:30","Metro verso Arc de Triomphe","Trasporto","M2 diretta da Pigalle o Blanche a Charles de Gaulle - Étoile, ~20 min. Usare Citymapper.","~25 min",48.8738,2.2950,"Charles de Gaulle - Étoile","",[],48.8825,2.3330),
+S("11:00","Arc de Triomphe","Foto","Il grande arco al centro di Place Charles de Gaulle, con vista su tutto il viale degli Champs-Élysées. Salita in cima a pagamento, opzionale.","~45 min",48.8738,2.2950,"Place Charles de Gaulle, 75008","",[W("⭐ Salita opzionale","i")],48.8738,2.2950),
+S("11:45","Champs-Élysées","Passeggiata","Passeggiata sul tratto alto del viale, con una sosta seduti per un caffè o un calice. Eventuali luminarie natalizie da verificare.","~1h",48.8705,2.3040,"Av. des Champs-Élysées, 75008","",[],48.8738,2.2950)]},
+{zone:"Bus e Torre Eiffel",items:[
+S("12:30","Bus hop-on hop-off fino alla Torre Eiffel","Attrazione","Salita alla fermata più vicina agli Champs-Élysées e giro seduti di circa 1h, con discesa alla Torre Eiffel. Verificare la fermata e se il biglietto conviene per un tratto breve.","~1h",48.8705,2.3040,"Av. des Champs-Élysées, 75008","Verificare operatore, fermata di partenza e orario dell'ultimo giro.",[W("⚠ Verificare fermata e percorso","a")],48.8705,2.3040,"https://www.getyourguide.com/it-it/paris-l16/hop-on-hop-off-tours-tc9/"),
+S("13:30","Pranzo a Rue Cler","Mercato","Via pedonale con botteghe: formaggi, panini, crêpes. Pranzo informale.","~2h",48.8562,2.3062,"Rue Cler, 75007","",[],48.8584,2.2945),
+S("15:30","Torre Eiffel","Attrazione","Passeggiata sotto la torre e foto classica dai giardini di Trocadéro, dall'altra parte del ponte. Salita opzionale: prenotare l'orario online.","~45 min",48.8584,2.2945,"5 Av. Anatole France, 75007","",[W("⭐ Salita opzionale","i"),W("📋 Prenotare online","b")],48.8616,2.2893)]},
+{zone:"Senna",items:[
+S("16:15","Passeggiata lungo la Senna","Passeggiata","Dalla Torre Eiffel verso est lungo il fiume, fino a Pont Alexandre III, ~30 min.","~30 min",48.8639,2.3135,"Pont Alexandre III, 75008","",[],48.8584,2.2945),
+S("16:45","Pont Alexandre III","Foto","Il ponte più scenografico di Parigi: statue dorate e lampioni liberty, con vista su Invalides e Torre Eiffel. Gratuito, opzionale se si è stanchi.","~20 min",48.8639,2.3135,"Pont Alexandre III, 75008","",[W("⭐ Opzionale","i")],48.8639,2.3135),
+S("17:05","Passeggiata verso Pont de l'Alma","Passeggiata","Lungo il Cours la Reine, con il tramonto sulla Senna, ~20 min.","~20 min",48.8640,2.3010,"Pont de l'Alma, 75008","",[],48.8639,2.3135),
+S("17:30","Aperitivo vicino a Pont de l'Alma","Bar/Cantina","Un calice seduti in zona Alma, prima del battello. Locale da scegliere.","~45 min",48.8640,2.3010,"Pont de l'Alma, 75008","",[],48.8640,2.3010),
+S("18:30","Giro in battello sulla Senna","Attrazione","Crociera serale di circa un'ora (25 € a persona, anche con musica a bordo). A quell'ora la Torre Eiffel è illuminata e alle 19:00 scintilla. Imbarco da confermare con l'operatore.","~1h 15min",48.8640,2.3010,"Port de la Conférence, Pont de l'Alma","",[W("⚠ Verificare orari","a")])]},
+{zone:"Cena e rientro",items:[
+S("19:45","Verso Le Bon Georges","Trasporto","Taxi o Uber (~25 min) oppure metro con un cambio: usare Citymapper.","~30 min",48.8777,2.3375,"45 Rue Saint-Georges, 75009","",[],48.8640,2.3010),
+S("20:30","Cena da Le Bon Georges","Cibo","Bistrot classico francese nel 9° arrondissement, vicino all'hotel, aperto fino a tardi. Prenotare per quattro (tel. 01 48 78 40 30).","~1h 30min",48.8777,2.3375,"45 Rue Saint-Georges, 75009","",[],48.8777,2.3375),
+S("22:30","Rientro hotel","Trasporto","Pochi minuti a piedi.","",H_LA,H_LN,"Hotel Royal Mansart","",[],48.8825,2.3375)]}]},
 
 {id:3,pl:"Lun 23",t:"Rientro a Cagliari",wt:"4-9°C",rn:0,dr:"🧥 Giubbotto caldo.",wn:"Sveglia presto: navetta per Beauvais da prenotare.",km:1,zones:[
 {zone:"Mattina",items:[
@@ -181,3 +179,25 @@ var FOOD = [
   {c:"Vicino all'hotel",n:"Rue des Martyrs",z:"9° arr.",d:"Via di botteghe, boulangerie, formaggi e caffè.",a:"Rue des Martyrs, 75009 Paris"}
 ];
 
+
+
+/* --- Info prenotazioni per tappa ---
+   m: inizio nome tappa; k: req (da prenotare), opt (facoltativa), free (gratis/nessuna prenotazione)
+   Lo stato "prenotato" e condiviso: si modifica nel file bookings.json (chiave = id) */
+var BOOKINFO = {
+  "hotel":{m:["Hotel Royal Mansart"],k:"req",t:"Avvisare l'hotel che arriviamo dopo mezzanotte (check-in tardivo)."},
+  "navetta-andata":{m:["Navetta Beauvais - Porte Maillot"],k:"req",t:"Biglietto online 16,90 € (18 € in loco). Parte circa 20-25 minuti dopo l'atterraggio."},
+  "navetta-ritorno":{m:["Navetta Porte Maillot - Beauvais"],k:"req",t:"Biglietto online 16,90 €. Orari della corsa da verificare con la compagnia (+33 892 682 064)."},
+  "bus":{m:["Giro in bus","Bus hop-on"],k:"req",t:"Biglietto hop-on hop-off da acquistare online (link nella tappa). Verificare validità e fermate."},
+  "battello":{m:["Giro in battello"],k:"req",t:"Crociera serale 18:30, 25 € a persona."},
+  "bon-georges":{m:["Cena da Le Bon Georges"],k:"req",t:"Prenotare per telefono: 01 48 78 40 30."},
+  "abbesses":{m:["Cena ad Abbesses"],k:"req",t:"Prenotare. Locale ancora da scegliere."},
+  "notre-dame":{m:["Notre-Dame"],k:"opt",t:"Ingresso alla navata gratuito, senza biglietto. Fascia oraria gratuita facoltativa su resa.notredamedeparis.fr (si apre 2-3 giorni prima). Le torri costano 16 €, solo online."},
+  "eiffel":{m:["Torre Eiffel"],k:"opt",t:"Salita a pagamento: scale al 2° piano 14,80 €, ascensore fino in cima 36,70 €. Dal 29/09/2026 le scale richiedono prenotazione. Camminare sotto la torre non richiede biglietto (da verificare)."},
+  "arc":{m:["Arc de Triomphe"],k:"opt",t:"Vederlo da fuori è gratis. Salita in cima 16 € con biglietto online, solo scale (284 gradini) per lavori all'ascensore."},
+  "barav":{m:["Vino da Le Barav"],k:"opt",t:"Tel. 01 48 04 57 59. Calice circa 5 €. Una fonte lo dà chiuso a pranzo il sabato: telefonare per verificare."},
+  "terrazzo":{m:["Terrazzo Galeries Lafayette"],k:"free",t:"Gratuito, nell'orario del negozio (sabato fino alle 20:30). Chiuso se piove."},
+  "tuileries":{m:["Mercatino di Natale"],k:"free",t:"Ingresso gratuito, si paga quello che si consuma. Orari 2026 da confermare."},
+  "caractere":{m:["Panino da Caractère"],k:"free",t:"Nessuna prenotazione, si paga il panino. Orari da verificare."},
+  "pont-alexandre":{m:["Pont Alexandre III"],k:"free",t:"Gratuito."}
+};

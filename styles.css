@@ -526,3 +526,13 @@ html.light .shell::before{background-image:url("data:image/svg+xml,%3Csvg xmlns=
 .nav .nl{color:var(--nc,var(--tx2));opacity:.85}
 .nav button.on .nl{color:var(--nc,var(--tx));opacity:1}
 .more-it .ni{color:var(--nc)}
+
+/* prenotazioni sulle tile */
+.bk{margin-top:6px;font-size:11px;line-height:1.4;color:var(--tx2)}
+.bk-p{display:inline-block;font-weight:700;font-size:11px;padding:2px 8px;border-radius:999px;margin-bottom:3px}
+.bk-todo .bk-p{background:var(--wrns);color:var(--wrn)}
+.bk-ok .bk-p{background:rgba(34,197,94,.16);color:#16a34a}
+.bk-opt .bk-p{background:var(--accs);color:var(--acc)}
+.bk-free .bk-p{background:var(--bg3);color:var(--tx2)}
+
+.bk-btn{margin-top:6px;padding:6px 12px;border-radius:8px;border:1px solid var(--bd,#ccc);background:var(--cd,#fff);font-size:13px;font-weight:600}

@@ -1216,7 +1216,7 @@ function init(){
   renderNav();navDecorate();renderPills();LIVE_DAYS=loadDays();
 checkVersion();
 renderDay(0);renderSearch();renderTr();renderMt();renderIf();renderFood();renderBeerPage();
-  var _t=homeToday();homeDay=_t>=0?_t:0;renderHome();updateHeader("p2");
+  var _t=homeToday();homeDay=_t>=0?_t:0;renderHome();updateHeader("p2");loadBookings();setInterval(loadBookings,30000);document.addEventListener("visibilitychange",function(){if(!document.hidden)loadBookings()});
   document.getElementById("si").addEventListener("input",doSearch);
   document.getElementById("si").placeholder="Cerca tappa, luogo, metro...";
   var el=document.getElementById("dc");
@@ -1352,7 +1352,7 @@ function renderDay(i){
       var diaryInfo=renderDiaryBtn(i,gi);
       var metroWarn=getMetroWarning(s);
       h+='<div class="zk-nm">'+s.n+(diaryInfo.hasPhoto?' <span style="font-size:12px">\u{1F4F7}</span>':'')+(diaryInfo.hasEntries&&!diaryInfo.hasPhoto?' <span style="font-size:12px">\u{1F4DD}</span>':'')+' <a class="ed-pen" href="javascript:void(0)" onclick="event.stopPropagation();event.preventDefault();showEditStop('+i+','+gi+')" title="Modifica">'+ICN.edit+'</a></div>';
-      h+='<div class="zk-ds">'+s.ds+'</div>';
+      h+='<div class="zk-ds">'+s.ds+'</div>'+bkHtml(s);
       if(metroWarn){metroWarn.forEach(function(w){h+='<div class="zk-metro-warn"><span class="zk-mw-dot'+(w.sev<5?' zk-mw-bad':' zk-mw-warn')+'"></span>'+w.line+': '+w.status+'</div>'})}
       if(tgs)h+='<div class="zk-tags">'+tgs+'</div>';
       if(s.du)h+='<div class="zk-du">'+s.du+'</div>';
@@ -1720,7 +1720,7 @@ function renderIf(){
     {ico:"\u{1F4A7}",n:"Carafe d'eau",d:"Si chiede acqua del rubinetto gratis al ristorante"},
     {ico:"\u{1F37D}",n:"Orari cena",d:"Cucine spesso chiuse tra le 14:30 e le 19:00"},
     {ico:"\u{1F4B3}",n:"Contactless diffuso",d:"Meglio avere qualche contante per i piccoli banchi"},
-    {ico:"\u{1F45C}",n:"Borseggiatori",d:"Attenzione su metro, Louvre, Montmartre e Sacr\u00e9-C\u0153ur"},
+    {ico:"\u{1F45C}",n:"Borseggiatori",d:"Attenzione su metro, bus turistici, Montmartre e Sacr\u00e9-C\u0153ur"},
     {ico:"\u{1F687}",n:"Metro",d:"Ticket singolo valido anche sul bus. Citymapper per i percorsi"}
   ];
   tips.forEach(function(t,i){
@@ -1873,7 +1873,50 @@ function renderFood(){
 }
 
 /* --- Home: La mia giornata (tab p2) --- */
-var HOME_BOOK=[[0,"Navetta Beauvais - Porte Maillot (biglietto online)"],[0,"Avvisare l'hotel dell'arrivo tardivo"],[1,"Notre-Dame (prenotazione gratuita, opzionale)"],[1,"Louvre (biglietto con fascia oraria)"],[2,"Torre Eiffel (se sali, orario online)"],[2,"Battello sulla Senna"],[2,"Tour Parc des Princes (opzionale)"],[3,"Navetta Porte Maillot - Beauvais (biglietto online)"]];
+/* --- Prenotazioni condivise (bookings.json nel repo) --- */
+var BK_STATUS={};
+try{BK_STATUS=JSON.parse(localStorage.getItem("pr-bkremote")||"{}")}catch(e){}
+function bkOf(s){
+  if(typeof BOOKINFO==="undefined")return null;
+  for(var id in BOOKINFO){var m=BOOKINFO[id].m;for(var i=0;i<m.length;i++){if(s.n.indexOf(m[i])===0)return id}}
+  return null;
+}
+function bkDone(id){return !!(BK_STATUS[id]&&BK_STATUS[id].done)}
+function bkHtml(s){
+  var id=bkOf(s);if(!id)return "";
+  var b=BOOKINFO[id],st=BK_STATUS[id]||{},done=bkDone(id),cls,pill;
+  if(done){cls="bk-ok";pill="\u2705 Prenotato"}
+  else if(b.k==="req"){cls="bk-todo";pill="\u{1F4CB} Da prenotare"}
+  else if(b.k==="opt"){cls="bk-opt";pill="\u2139\uFE0F Prenotazione facoltativa"}
+  else{cls="bk-free";pill="\u{1F193} Gratuito"}
+  var note=(done&&st.note?'<div class="bk-n"><b>'+String(st.note).replace(/</g,"&lt;")+'</b></div>':"");
+  var btn=(CONFIG.bkDb&&b.k!=="free")?'<button class="bk-btn" onclick="bkToggle(\''+id+'\')">'+(done?"Annulla":"Segna come prenotato")+'</button>':"";
+  return '<div class="bk '+cls+'"><span class="bk-p">'+pill+'</span><div class="bk-n">'+b.t+'</div>'+note+btn+'</div>';
+}
+function bkToggle(id){
+  console.log("[BK] click",id,"bkDb=",CONFIG.bkDb,"build=bk3");
+  var cur=bkDone(id),note="";
+  if(!cur){note=prompt("Nota (es. chi ha prenotato, orario). Puoi lasciare vuoto:","");if(note===null)return}
+  var v={done:!cur,note:note||""};
+  console.log("[BK] PUT",CONFIG.bkDb+"/bookings/"+id+".json",v);
+  fetch(CONFIG.bkDb+"/bookings/"+id+".json",{method:"PUT",body:JSON.stringify(v)}).then(function(r){console.log("[BK] PUT status",r.status);if(!r.ok)alert("Salvataggio non riuscito (errore "+r.status+")")}).catch(function(e){console.error("[BK] PUT error",e);alert("Salvataggio non riuscito: "+e)});
+  BK_STATUS[id]=v;try{localStorage.setItem("pr-bkremote",JSON.stringify(BK_STATUS))}catch(e){}
+  try{if(LIVE_DAYS&&LIVE_DAYS.length)renderDay(cD);renderHome()}catch(e){console.error("[BK] render error",e)}
+}
+function loadBookings(){
+  if(typeof fetch!=="function")return;
+  var base=fetch("bookings.json?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.json():{}}).catch(function(){return {}});
+  var live=CONFIG.bkDb?fetch(CONFIG.bkDb+"/bookings.json",{cache:"no-store"}).then(function(r){return r.ok?r.json():null}).catch(function(){return null}):Promise.resolve(null);
+  Promise.all([base,live]).then(function(r){
+    console.log("[BK] load file:",r[0],"db:",r[1]);
+    var j=Object.assign({},r[0]||{},r[1]||{});
+    var n=JSON.stringify(j);
+    if(n===JSON.stringify(BK_STATUS))return;
+    BK_STATUS=j;try{localStorage.setItem("pr-bkremote",n)}catch(e){}
+    if(typeof renderDay==="function"&&LIVE_DAYS&&LIVE_DAYS.length)renderDay(cD);
+    renderHome();
+  }).catch(function(){});
+}
 var homeDay=0;
 function homeVis(show){var h=document.getElementById("home");if(h)h.style.display=show?"":"none"}
 function homeToday(){
@@ -1881,12 +1924,6 @@ function homeToday(){
   var t=n.getFullYear()+"-"+p(n.getMonth()+1)+"-"+p(n.getDate());
   var ds=["2026-11-20","2026-11-21","2026-11-22","2026-11-23"];
   return ds.indexOf(t);
-}
-function homeBk(di,i){return "pr-bk-"+di+"-"+i}
-function homeTick(di,i){
-  var k=homeBk(di,i);
-  try{localStorage.setItem(k,localStorage.getItem(k)==="1"?"0":"1")}catch(e){}
-  renderHome();
 }
 function homeSel(i){homeDay=i;renderHome()}
 function renderHome(){
@@ -1902,8 +1939,8 @@ function renderHome(){
   else{var tr=all.filter(function(s){return s.tp==="Trasporto"||s.tp==="Hotel"}).slice(0,5);if(tr.length)h+='<div class="hm-sec"><div class="hm-sh">SPOSTAMENTI CHIAVE</div>'+rows(tr)+'</div>'}
   var eat=all.filter(function(s){return s.tp==="Cibo"||s.tp==="Mercato"}).slice(0,3);
   if(eat.length)h+='<div class="hm-sec"><div class="hm-sh">MANGIARE</div>'+rows(eat)+'</div>';
-  var bk=HOME_BOOK.map(function(b,i){return {d:b[0],t:b[1],i:i}}).filter(function(b){return b.d===di});
-  if(bk.length)h+='<div class="hm-sec"><div class="hm-sh">DA PRENOTARE</div>'+bk.map(function(b){var on=false;try{on=localStorage.getItem(homeBk(di,b.i))==="1"}catch(e){}return '<div class="hm-row" onclick="homeTick('+di+','+b.i+')"><span class="hm-ic">'+(on?"☑":"☐")+'</span><span class="hm-n'+(on?" dn":"")+'">'+b.t+'</span></div>'}).join("")+'</div>';
+  var bk=all.filter(function(s){var b=bkOf(s);return b&&BOOKINFO[b].k==="req"});
+  if(bk.length)h+='<div class="hm-sec"><div class="hm-sh">DA PRENOTARE</div>'+bk.map(function(s){var id=bkOf(s),on=bkDone(id);return '<div class="hm-row" onclick="goTo('+di+',\''+s.t+'\')"><span class="hm-ic" style="cursor:pointer;font-size:20px" onclick="event.stopPropagation();bkToggle(\''+id+'\')">'+(on?"\u2705":"\u2B1C")+'</span><span class="hm-n'+(on?" dn":"")+'">'+s.n+'</span><span class="hm-h">'+(on?"prenotato":"da fare")+'</span></div>'}).join("")+'</div>';
   h+='<button class="hm-go" onclick="goTo('+di+',\''+(all[0]?all[0].t:"")+'\')">Apri nel Piano ›</button>';
   w.innerHTML=h;
 }

@@ -1,0 +1,46 @@
+{
+ "navetta-andata": {
+  "done": false,
+  "note": ""
+ },
+ "navetta-ritorno": {
+  "done": false,
+  "note": ""
+ },
+ "bus": {
+  "done": false,
+  "note": ""
+ },
+ "battello": {
+  "done": false,
+  "note": ""
+ },
+ "bon-georges": {
+  "done": false,
+  "note": ""
+ },
+ "abbesses": {
+  "done": false,
+  "note": ""
+ },
+ "notre-dame": {
+  "done": false,
+  "note": ""
+ },
+ "eiffel": {
+  "done": false,
+  "note": ""
+ },
+ "arc": {
+  "done": false,
+  "note": ""
+ },
+ "barav": {
+  "done": false,
+  "note": ""
+ },
+ "hotel": {
+  "done": false,
+  "note": ""
+ }
+}
